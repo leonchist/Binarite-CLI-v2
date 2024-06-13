@@ -16,8 +16,8 @@ fn save_tokens<T: CredStore>(
         .save()
 }
 
-pub fn login<T: CredStore>(context: &mut CommandContext<T>) {
-    match auth::login(context.config) {
+pub async fn login<'a, T: CredStore>(context: &mut CommandContext<'a, T>) {
+    match auth::login(context.config).await {
         Ok(resp) => {
             let access_token = resp.access_token.clone().unwrap();
             let refresh_token = resp.refresh_token.clone().unwrap_or_default();

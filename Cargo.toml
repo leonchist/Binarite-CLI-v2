@@ -18,5 +18,5 @@ base64 = "0.22.1"
 spinners = "4.1.1"
 open = "5.1.4"
 oauth2 = "4.4.2"
-reqwest = { version = "^0.12", features = ["json", "multipart", "blocking"] }
+reqwest = { version = "^0.12", features = ["json", "multipart"] }
 chrono = "0.4.38"

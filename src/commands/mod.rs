@@ -59,6 +59,12 @@ enum SphereCommands{
 pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>) {
     let cli = Cli::parse();
 
+    match cli.command {
+        Command::Login => login(context).await,
+        Command::Logout => logout(context),
+        _ => {}
+    }
+
     let access_token = match get_token(context) {
         Ok(token) => match token {
             Some(token) => token,
@@ -79,8 +85,7 @@ pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>
     configuration.base_path = context.config.binarite_url.clone();
 
     match cli.command {
-        Command::Login => todo!(),
-        Command::Logout => todo!(),
+
         Command::Refresh => todo!(),
         Command::Sphere(sphere) => {
             match sphere.command {
@@ -97,6 +102,7 @@ pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>
                 SphereCommands::Output => todo!(),
             }
         },
+        _ => {}
     }
 }
 
