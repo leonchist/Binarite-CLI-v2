@@ -1,0 +1,44 @@
+name: Build binarite-cli
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    strategy:
+        matrix:
+            include:
+                - os: ubuntu-latest
+                  bin_path: target/release/binarite-cli
+                  name: linux
+                  ext:
+
+                - os: windows-latest
+                  bin_path: target\release\binarite-cli.exe
+                  name: windows
+                  ext: .exe
+
+                - os: macos-latest
+                  bin_path: target/release/binarite-cli
+                  name: macos
+                  ext:
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build
+      run: cargo build --release
+
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: mgcli-${{ matrix.name }}${{ matrix.ext }}
+        path: ${{ matrix.bin_path }}
