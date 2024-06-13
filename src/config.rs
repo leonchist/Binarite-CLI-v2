@@ -1,27 +1,20 @@
-use dotenvy::dotenv;
-use std::env;
+include!(concat!(env!("OUT_DIR"), "/oauth.rs"));
 
 #[derive(Debug)]
 pub struct Config {
-    pub domain: String,
-    pub client_id: String,
-    pub audience: String,
-    pub binarite_url: String,
+    pub domain: &'static str,
+    pub client_id: &'static str,
+    pub audience: &'static str,
+    pub binarite_url: &'static str,
 }
 
 impl Config {
-    pub fn from_env() -> Result<Self, env::VarError> {
-        dotenv().ok();
-        let domain = env::var("AUTH0_DOMAIN")?;
-        let client_id = env::var("AUTH0_CLIENT_ID")?;
-        let audience = env::var("AUTH0_AUDIENCE")?;
-        let binarite_url = env::var("BINARITE_URL")?;
-
-        Ok(Self {
-            domain,
-            client_id,
-            audience,
+    pub fn new() -> Self {
+        Self {
+            domain: auth0_domain,
+            client_id: auth0_client_id,
+            audience: auth0_audience,
             binarite_url,
-        })
+        }
     }
 }

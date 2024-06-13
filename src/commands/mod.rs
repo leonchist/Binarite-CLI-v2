@@ -82,7 +82,7 @@ pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>
     let mut configuration = Configuration::new();
 
     configuration.bearer_access_token = Some(access_token);
-    configuration.base_path = context.config.binarite_url.clone();
+    configuration.base_path = context.config.binarite_url.to_string();
 
     match cli.command {
 

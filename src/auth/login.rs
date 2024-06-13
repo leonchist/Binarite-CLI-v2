@@ -24,7 +24,7 @@ pub async fn login(config: &Config) -> Result<super::token_response::TokenRespon
     let device_auth_url = DeviceAuthorizationUrl::new(format!("https://{}/oauth/device/code", config.domain))?;
     let client =
     BasicClient::new(
-        ClientId::new(config.client_id.clone()),
+        ClientId::new(config.client_id.to_string()),
         None,
         AuthUrl::new(format!("https://{}/authorize", config.domain))?,
         Some(TokenUrl::new(format!("https://{}/oauth/token", config.domain))?),

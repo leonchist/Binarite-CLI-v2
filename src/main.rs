@@ -1,6 +1,7 @@
 use commands::{parse_command, CommandContext};
 use config::Config;
 use cred_store::{CredStore, Credentials};
+use dotenvy_macro::dotenv;
 //use openapi::apis::{configuration::Configuration, metaspheres_api::get_metaspheres_from_project};
 
 mod auth;
@@ -9,7 +10,8 @@ mod config;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let config = Config::from_env()?;
+
+    let config = Config::new();
     let mut credentials = Credentials::new()
         .set_file_name(".mg/auth".to_string())
         .build()
