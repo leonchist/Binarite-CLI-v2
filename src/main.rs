@@ -8,7 +8,6 @@ mod config;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-
     let config = Config::new();
     let mut credentials = Credentials::new()
         .set_file_name(".mg/auth".to_string())
@@ -22,6 +21,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     parse_command(&mut context).await;
-    
+
     Ok(())
 }

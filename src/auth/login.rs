@@ -1,4 +1,7 @@
-use oauth2::{basic::BasicClient, reqwest::async_http_client, AuthUrl, ClientId, DeviceAuthorizationUrl, Scope, StandardDeviceAuthorizationResponse, TokenResponse, TokenUrl};
+use oauth2::{
+    basic::BasicClient, reqwest::async_http_client, AuthUrl, ClientId, DeviceAuthorizationUrl,
+    Scope, StandardDeviceAuthorizationResponse, TokenResponse, TokenUrl,
+};
 use serde::{Deserialize, Serialize};
 use spinners::{Spinner, Spinners};
 
@@ -14,15 +17,19 @@ struct DeviceAuthResponse {
     interval: usize,
 }
 
-pub async fn login(config: &Config) -> Result<super::token_response::TokenResponse, Box<dyn std::error::Error>> {
-
-    let device_auth_url = DeviceAuthorizationUrl::new(format!("https://{}/oauth/device/code", config.domain))?;
-    let client =
-    BasicClient::new(
+pub async fn login(
+    config: &Config,
+) -> Result<super::token_response::TokenResponse, Box<dyn std::error::Error>> {
+    let device_auth_url =
+        DeviceAuthorizationUrl::new(format!("https://{}/oauth/device/code", config.domain))?;
+    let client = BasicClient::new(
         ClientId::new(config.client_id.to_string()),
         None,
         AuthUrl::new(format!("https://{}/authorize", config.domain))?,
-        Some(TokenUrl::new(format!("https://{}/oauth/token", config.domain))?),
+        Some(TokenUrl::new(format!(
+            "https://{}/oauth/token",
+            config.domain
+        ))?),
     )
     .set_device_authorization_url(device_auth_url);
 
@@ -51,19 +58,29 @@ pub async fn login(config: &Config) -> Result<super::token_response::TokenRespon
         .exchange_device_access_token(&details)
         .request_async(async_http_client, tokio::time::sleep, None)
         .await?;
-    
-     sp.stop();
 
+    sp.stop();
 
     let access_token = token_result.access_token().secret().clone();
     let refresh_token = if token_result.refresh_token().is_some() {
         token_result.refresh_token().unwrap().secret().clone()
-    }
-    else {
+    } else {
         String::new()
     };
     let expires_in = token_result.expires_in().unwrap().as_secs();
-    let scopes = token_result.scopes().unwrap().iter().map(| s | s.to_string()).collect::<Vec<String>>().join(", ");
+    let scopes = token_result
+        .scopes()
+        .unwrap()
+        .iter()
+        .map(|s| s.to_string())
+        .collect::<Vec<String>>()
+        .join(", ");
 
-   Ok(super::token_response::TokenResponse { access_token: Some(access_token), token_type: None, refresh_token: Some(refresh_token), expires_in: Some(expires_in as usize), scope: Some(scopes) })
+    Ok(super::token_response::TokenResponse {
+        access_token: Some(access_token),
+        token_type: None,
+        refresh_token: Some(refresh_token),
+        expires_in: Some(expires_in as usize),
+        scope: Some(scopes),
+    })
 }

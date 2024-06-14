@@ -1,7 +1,10 @@
 use crate::commands::CommandContext;
 use base64::Engine;
 use cred_store::CredStore;
-use oauth2::{basic::BasicClient, reqwest::http_client, AuthUrl, ClientId, DeviceAuthorizationUrl, RefreshToken, TokenResponse, TokenUrl};
+use oauth2::{
+    basic::BasicClient, reqwest::http_client, AuthUrl, ClientId, DeviceAuthorizationUrl,
+    RefreshToken, TokenResponse, TokenUrl,
+};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -39,9 +42,9 @@ pub fn refresh_access_token(
     client_id: &str,
     refresh_token: &str,
 ) -> Result<super::token_response::TokenResponse, Box<dyn std::error::Error>> {
-    let device_auth_url = DeviceAuthorizationUrl::new(format!("https://{}/oauth/device/code", domain))?;
-    let client =
-    BasicClient::new(
+    let device_auth_url =
+        DeviceAuthorizationUrl::new(format!("https://{}/oauth/device/code", domain))?;
+    let client = BasicClient::new(
         ClientId::new(client_id.to_string()),
         None,
         AuthUrl::new(format!("https://{}/authorize", domain))?,
@@ -49,28 +52,37 @@ pub fn refresh_access_token(
     )
     .set_device_authorization_url(device_auth_url);
 
-    let token_result = client.exchange_refresh_token(&RefreshToken::new(refresh_token.to_string())).request(http_client);
+    let token_result = client
+        .exchange_refresh_token(&RefreshToken::new(refresh_token.to_string()))
+        .request(http_client);
 
     match token_result {
         Ok(result) => {
             let access_token = result.access_token().secret().clone();
             let refresh_token = if result.refresh_token().is_some() {
                 result.refresh_token().unwrap().secret().clone()
-            }
-            else {
+            } else {
                 String::new()
             };
             let expires_in = result.expires_in().unwrap().as_secs();
             // scopes not extracted.
-            let scopes = result.scopes().unwrap().iter().map(| s | s.to_string()).collect::<Vec<String>>().join(", ");
-        
-        
-        
-            Ok(super::token_response::TokenResponse { access_token: Some(access_token), token_type: None, refresh_token: Some(refresh_token), expires_in: Some(expires_in as usize), scope: Some(scopes) })
-        },
-        Err(e) => {
-            Err(Box::new(e))
-        },
+            let scopes = result
+                .scopes()
+                .unwrap()
+                .iter()
+                .map(|s| s.to_string())
+                .collect::<Vec<String>>()
+                .join(", ");
+
+            Ok(super::token_response::TokenResponse {
+                access_token: Some(access_token),
+                token_type: None,
+                refresh_token: Some(refresh_token),
+                expires_in: Some(expires_in as usize),
+                scope: Some(scopes),
+            })
+        }
+        Err(e) => Err(Box::new(e)),
     }
 }
 

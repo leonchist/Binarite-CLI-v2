@@ -1,24 +1,33 @@
 use clap::Args;
-use openapi::{apis::{configuration::Configuration, metaspheres_api::{create_metasphere, delete_metasphere, get_metaspheres_from_project}}, models::CreateMetasphereRequest};
+use openapi::{
+    apis::{
+        configuration::Configuration,
+        metaspheres_api::{create_metasphere, delete_metasphere, get_metaspheres_from_project},
+    },
+    models::CreateMetasphereRequest,
+};
 
 #[derive(Debug, Args)]
 pub struct SphereListArgs {
     #[arg(short, long)]
     project_id: i32,
     #[arg(short, long)]
-    show_deleted: Option<bool>
+    show_deleted: Option<bool>,
 }
 
 pub async fn list_sphere(configuration: &Configuration, args: &SphereListArgs) {
     match get_metaspheres_from_project(configuration, args.project_id, args.show_deleted).await {
         Ok(result) => {
-            println!("List of metaspheres for project {} :\n {}", args.project_id, serde_json::to_string_pretty(&result).unwrap());
-        },
+            println!(
+                "List of metaspheres for project {} :\n {}",
+                args.project_id,
+                serde_json::to_string_pretty(&result).unwrap()
+            );
+        }
         Err(err) => {
             println!("Error getting metasphere list : {}", err);
-        },
+        }
     };
-
 }
 
 #[derive(Debug, Args)]
@@ -37,7 +46,6 @@ pub struct SphereCreateArgs {
     instance_count: Option<i32>,
     #[arg(long)]
     instance_size: Option<String>,
-    
 }
 
 pub async fn create_sphere(configuration: &Configuration, args: SphereCreateArgs) {
@@ -50,27 +58,26 @@ pub async fn create_sphere(configuration: &Configuration, args: SphereCreateArgs
     match create_metasphere(configuration, args.project_id, request).await {
         Ok(result) => {
             println!("Metasphere creation success :\n {}", result.uuid);
-        },
+        }
         Err(err) => {
             println!("Error creating metasphere : {}", err);
-        },
+        }
     }
 }
 
 #[derive(Debug, Args)]
-pub struct SphereDeleteArgs{
+pub struct SphereDeleteArgs {
     #[arg(short, long)]
-    metasphere_id: i32
+    metasphere_id: i32,
 }
 
-pub async fn delete_sphere(configuration: &Configuration, args: SphereDeleteArgs ) {
-
+pub async fn delete_sphere(configuration: &Configuration, args: SphereDeleteArgs) {
     match delete_metasphere(configuration, args.metasphere_id).await {
         Ok(_) => {
             println!("Metasphere deletion request success :\n");
-        },
+        }
         Err(err) => {
             println!("Error creating metasphere : {}", err);
-        },
+        }
     }
 }

@@ -3,7 +3,6 @@ mod login;
 mod logout;
 mod sphere;
 
-
 use clap::{Args, Parser, Subcommand};
 pub use context::CommandContext;
 use login::login;
@@ -14,7 +13,9 @@ use cred_store::CredStore;
 
 use crate::auth::get_token::get_token;
 
-use self::sphere::{create_sphere, delete_sphere, list_sphere, SphereCreateArgs, SphereDeleteArgs, SphereListArgs};
+use self::sphere::{
+    create_sphere, delete_sphere, list_sphere, SphereCreateArgs, SphereDeleteArgs, SphereListArgs,
+};
 
 #[derive(Parser)]
 #[clap(author, version, about = "A MetaGravity command line tool")]
@@ -28,7 +29,7 @@ enum Command {
     Login,
     Logout,
     Sphere(SphereArgs),
-    Project
+    Project,
 }
 
 #[derive(Debug, Args)]
@@ -39,12 +40,12 @@ struct SphereArgs {
 }
 
 #[derive(Debug, Subcommand)]
-enum SphereCommands{
+enum SphereCommands {
     Create(SphereCreateArgs),
     Delete(SphereDeleteArgs),
     List(SphereListArgs),
     Status,
-    Output
+    Output,
 }
 
 pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>) {
@@ -76,21 +77,18 @@ pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>
     configuration.base_path = context.config.binarite_url.to_string();
 
     match cli.command {
-
-        Command::Sphere(sphere) => {
-            match sphere.command {
-                SphereCommands::Create(args) => {
-                    create_sphere(&configuration, args).await;
-                },
-                SphereCommands::Delete(args) => {
-                    delete_sphere(&configuration, args).await;
-                },
-                SphereCommands::List(args) => {
-                    list_sphere(&configuration, &args).await;
-                },
-                SphereCommands::Status => todo!(),
-                SphereCommands::Output => todo!(),
+        Command::Sphere(sphere) => match sphere.command {
+            SphereCommands::Create(args) => {
+                create_sphere(&configuration, args).await;
             }
+            SphereCommands::Delete(args) => {
+                delete_sphere(&configuration, args).await;
+            }
+            SphereCommands::List(args) => {
+                list_sphere(&configuration, &args).await;
+            }
+            SphereCommands::Status => todo!(),
+            SphereCommands::Output => todo!(),
         },
         Command::Project => todo!(),
         _ => {}
