@@ -2,7 +2,6 @@ use crate::commands::CommandContext;
 use base64::Engine;
 use cred_store::CredStore;
 use oauth2::{basic::BasicClient, reqwest::http_client, AuthUrl, ClientId, DeviceAuthorizationUrl, RefreshToken, TokenResponse, TokenUrl};
-//use reqwest::blocking::Client;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -55,7 +54,6 @@ pub fn refresh_access_token(
     match token_result {
         Ok(result) => {
             let access_token = result.access_token().secret().clone();
-            let token_type = result.token_type();
             let refresh_token = if result.refresh_token().is_some() {
                 result.refresh_token().unwrap().secret().clone()
             }

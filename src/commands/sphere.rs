@@ -1,5 +1,5 @@
 use clap::Args;
-use openapi::{apis::{configuration::Configuration, metaspheres_api::{create_metasphere, delete_metasphere, get_metaspheres_from_project}}, models::{self, CreateMetasphereRequest}};
+use openapi::{apis::{configuration::Configuration, metaspheres_api::{create_metasphere, delete_metasphere, get_metaspheres_from_project}}, models::CreateMetasphereRequest};
 
 #[derive(Debug, Args)]
 pub struct SphereListArgs {

@@ -11,10 +11,10 @@ pub struct Config {
 impl Config {
     pub fn new() -> Self {
         Self {
-            domain: auth0_domain,
-            client_id: auth0_client_id,
-            audience: auth0_audience,
-            binarite_url,
+            domain: AUTH0_DOMAIN,
+            client_id: AUTH0_CLIENT_ID,
+            audience: AUTH0_AUDIENCE,
+            binarite_url: BINARITE_URL,
         }
     }
 }

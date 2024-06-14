@@ -1,8 +1,3 @@
-// use crate::config::Config;
-// use oauth2::{basic::BasicClient, reqwest::async_http_client, AuthUrl, ClientId, DeviceAuthorizationUrl, Scope, StandardDeviceAuthorizationResponse, TokenUrl};
-// use serde::{Deserialize, Serialize};
-// use spinners::{Spinner, Spinners};
-
 use oauth2::{basic::BasicClient, reqwest::async_http_client, AuthUrl, ClientId, DeviceAuthorizationUrl, Scope, StandardDeviceAuthorizationResponse, TokenResponse, TokenUrl};
 use serde::{Deserialize, Serialize};
 use spinners::{Spinner, Spinners};
@@ -40,9 +35,6 @@ pub async fn login(config: &Config) -> Result<super::token_response::TokenRespon
         .request_async(async_http_client)
         .await?;
 
-    // dbg!(&details);
-    // dbg!(&client);
-
     println!(
         "Open this URL in your browser:\n{}\nand enter the code: {}",
         details.verification_uri().to_string(),
@@ -53,9 +45,6 @@ pub async fn login(config: &Config) -> Result<super::token_response::TokenRespon
 
     _ = open::that(complete_uri.secret());
 
-    // let start_instant = Instant::now();
-    // let expiry_duration = Duration::from_secs(device_auth_response.expires_in as u64);
-
     let mut sp = Spinner::new(Spinners::Dots9, "Polling for token".into());
 
     let token_result = client
@@ -65,10 +54,8 @@ pub async fn login(config: &Config) -> Result<super::token_response::TokenRespon
     
      sp.stop();
 
-    // dbg!(&token_result);
 
     let access_token = token_result.access_token().secret().clone();
-    let token_type = token_result.token_type();
     let refresh_token = if token_result.refresh_token().is_some() {
         token_result.refresh_token().unwrap().secret().clone()
     }
@@ -76,7 +63,6 @@ pub async fn login(config: &Config) -> Result<super::token_response::TokenRespon
         String::new()
     };
     let expires_in = token_result.expires_in().unwrap().as_secs();
-    // scopes not extracted.
     let scopes = token_result.scopes().unwrap().iter().map(| s | s.to_string()).collect::<Vec<String>>().join(", ");
 
    Ok(super::token_response::TokenResponse { access_token: Some(access_token), token_type: None, refresh_token: Some(refresh_token), expires_in: Some(expires_in as usize), scope: Some(scopes) })

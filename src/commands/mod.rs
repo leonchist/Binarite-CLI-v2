@@ -1,24 +1,15 @@
-#[path = "command-executor.rs"]
-mod command_executor;
 mod context;
 mod login;
 mod logout;
-mod refresh;
 mod sphere;
 
-//use std::env::Args;
-
-use std::borrow::Borrow;
 
 use clap::{Args, Parser, Subcommand};
-use command_executor::CommandExecutor;
 pub use context::CommandContext;
 use login::login;
 use logout::logout;
 use openapi::apis::configuration::Configuration;
-use refresh::refresh;
 
-//use clap::{command, Parser, Subcommand};
 use cred_store::CredStore;
 
 use crate::auth::get_token::get_token;
@@ -36,7 +27,6 @@ struct Cli {
 enum Command {
     Login,
     Logout,
-    Refresh,
     Sphere(SphereArgs)
 }
 
@@ -86,7 +76,6 @@ pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>
 
     match cli.command {
 
-        Command::Refresh => todo!(),
         Command::Sphere(sphere) => {
             match sphere.command {
                 SphereCommands::Create(args) => {
@@ -105,27 +94,3 @@ pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>
         _ => {}
     }
 }
-
-// impl<T: CredStore> CommandExecutor<T> for Command {
-//     fn execute(&self, context: &mut CommandContext<T>) {
-//         match self {
-//             Command::Login => login(context),
-//             Command::Logout => logout(context),
-//             Command::Refresh => refresh(context),
-//             Command::Sphere(sphere) => {
-//                 match sphere.command {
-//                     SphereCommands::Create => todo!(),
-//                     SphereCommands::Delete => todo!(),
-//                     SphereCommands::List => list_sphere(context, ),
-//                     SphereCommands::Status => todo!(),
-//                     SphereCommands::Output => todo!(),
-//                 }
-//             }
-//         }
-//     }
-// }
-
-// pub fn invoke_command<T: CredStore>(context: &mut CommandContext<T>) {
-//     let cli = Cli::parse();
-//     cli.command.execute(context);
-// }
