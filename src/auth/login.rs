@@ -37,8 +37,8 @@ pub async fn login(config: &Config) -> Result<super::token_response::TokenRespon
 
     println!(
         "Open this URL in your browser:\n{}\nand enter the code: {}",
-        details.verification_uri().to_string(),
-        details.user_code().secret().to_string()
+        **details.verification_uri(),
+        details.user_code().secret()
     );
 
     let complete_uri = details.verification_uri_complete().unwrap();

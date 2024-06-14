@@ -27,7 +27,8 @@ struct Cli {
 enum Command {
     Login,
     Logout,
-    Sphere(SphereArgs)
+    Sphere(SphereArgs),
+    Project
 }
 
 #[derive(Debug, Args)]
@@ -91,6 +92,7 @@ pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>
                 SphereCommands::Output => todo!(),
             }
         },
+        Command::Project => todo!(),
         _ => {}
     }
 }

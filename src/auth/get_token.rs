@@ -85,7 +85,7 @@ pub fn get_token<T: CredStore>(
         (Some(at), Some(rt)) => {
             if is_token_expired(&at) {
                 let token_response =
-                    refresh_access_token(&context.config.domain, &context.config.client_id, &rt)?;
+                    refresh_access_token(context.config.domain, context.config.client_id, &rt)?;
                 let new_access_token = token_response.access_token.unwrap();
                 let new_refresh_token = token_response.refresh_token.unwrap();
 

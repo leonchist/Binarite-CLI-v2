@@ -10,7 +10,7 @@ pub struct SphereListArgs {
 }
 
 pub async fn list_sphere(configuration: &Configuration, args: &SphereListArgs) {
-    match get_metaspheres_from_project(&configuration, args.project_id, args.show_deleted).await {
+    match get_metaspheres_from_project(configuration, args.project_id, args.show_deleted).await {
         Ok(result) => {
             println!("List of metaspheres for project {} :\n {}", args.project_id, serde_json::to_string_pretty(&result).unwrap());
         },
