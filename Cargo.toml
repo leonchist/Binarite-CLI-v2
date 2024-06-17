@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-openapi = { path = "rust" }
+openapi = { path = "openapi" }
 cred-store = { path = "./cred-store" }
 tokio = { version = "1.38.0", features = ["full"] }
 
