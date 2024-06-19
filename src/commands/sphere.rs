@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use clap::Args;
 use openapi::{
     apis::{
@@ -6,6 +8,7 @@ use openapi::{
     },
     models::CreateMetasphereRequest,
 };
+use serde_json::json;
 
 #[derive(Debug, Args)]
 pub struct SphereListArgs {
@@ -46,6 +49,8 @@ pub struct SphereCreateArgs {
     instance_count: Option<i32>,
     #[arg(long)]
     instance_size: Option<String>,
+    #[arg(long)]
+    custom_args: Option<String>,
 }
 
 pub async fn create_sphere(configuration: &Configuration, args: SphereCreateArgs) {
@@ -54,6 +59,16 @@ pub async fn create_sphere(configuration: &Configuration, args: SphereCreateArgs
     request.cloud_provider = Some(args.cloud_provider);
     request.cloud_region = Some(args.cloud_region);
     request.instance_count = Some(args.instance_count);
+    if let Some(custom_args) = args.custom_args {
+        let mut custom_arguments = HashMap::new();
+        let args = custom_args.split(',');
+        for arg in args {
+            if let Some((key, value)) = arg.split_once('=') {
+                custom_arguments.insert(key, value);
+            }
+        }
+        request.terraform_var = Some(Some(json!(custom_arguments)));
+    }
     //request.instance_size = Some(args.instance_size.into());
     match create_metasphere(configuration, args.project_id, request).await {
         Ok(result) => {
