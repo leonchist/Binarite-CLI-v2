@@ -10,6 +10,7 @@ use logout::logout;
 use openapi::apis::configuration::Configuration;
 
 use cred_store::CredStore;
+use sphere::{get_metasphere_outputs, SphereOutputArgs};
 
 use crate::auth::get_token::get_token;
 
@@ -45,7 +46,7 @@ enum SphereCommands {
     Delete(SphereDeleteArgs),
     List(SphereListArgs),
     Status,
-    Output,
+    Output(SphereOutputArgs),
 }
 
 pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>) {
@@ -88,7 +89,9 @@ pub async fn parse_command<'a, T: CredStore>(context: &mut CommandContext<'a, T>
                 list_sphere(&configuration, &args).await;
             }
             SphereCommands::Status => todo!(),
-            SphereCommands::Output => todo!(),
+            SphereCommands::Output(args) => {
+                get_metasphere_outputs(&configuration, &args).await;
+            }
         },
         Command::Project => todo!(),
         _ => {}
