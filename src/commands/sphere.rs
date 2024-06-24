@@ -9,9 +9,11 @@ use serde_json::json;
 
 #[derive(Debug, Args)]
 pub struct SphereListArgs {
+    /// Id of the project for listing the metaspheres.
     #[arg(short, long)]
     project_id: i32,
-    #[arg(short, long)]
+    /// Also include deleted metaspheres in the listing.
+    #[arg(short, long, action=ArgAction::SetTrue)]
     show_deleted: Option<bool>,
 }
 
@@ -38,20 +40,28 @@ pub async fn list_sphere(configuration: &Configuration, args: &SphereListArgs) {
 
 #[derive(Debug, Args)]
 pub struct SphereCreateArgs {
+    /// Id of the project to create the metasphere in.
     #[arg(short, long)]
     project_id: i32,
+    /// Name of the metasphere to create.
     #[arg(short, long)]
     name: String,
+    /// Template used to create the metasphere.
     #[arg(short, long)]
     template: String,
+    /// Cloud provider to use to create the metasphere.
     #[arg(long)]
     cloud_provider: Option<String>,
+    /// Cloud region where to create the metasphere.
     #[arg(long)]
     cloud_region: Option<String>,
+    /// How many replicas to create (template-dependant).
     #[arg(long)]
     instance_count: Option<i32>,
+    /// T-Shirt Size of the main VM(s) of the template. See https://app.clickup.com/9005002661/v/dc/8cbuvx5-59952 for mor info.
     #[arg(long)]
     instance_size: Option<AltInstanceSize>,
+    /// Custom arguments to pass to the template. Comma separated key=value pairs.
     #[arg(long)]
     custom_args: Option<String>,
 }
@@ -104,6 +114,7 @@ pub async fn create_sphere(configuration: &Configuration, args: SphereCreateArgs
 
 #[derive(Debug, Args)]
 pub struct SphereDeleteArgs {
+    /// Id of the metasphere to delete.
     #[arg(short, long)]
     metasphere_id: i32,
 }
@@ -111,7 +122,7 @@ pub struct SphereDeleteArgs {
 pub async fn delete_sphere(configuration: &Configuration, args: SphereDeleteArgs) {
     match metaspheres_api::delete_metasphere(configuration, args.metasphere_id).await {
         Ok(_) => {
-            println!("Metasphere deletion request success :\n");
+            println!("Metasphere deletion request success.");
         }
         Err(err) => {
             println!("Error creating metasphere : {}", err);
@@ -121,8 +132,10 @@ pub async fn delete_sphere(configuration: &Configuration, args: SphereDeleteArgs
 
 #[derive(Debug, Args)]
 pub struct SphereOutputArgs {
+    /// Id of the metasphere to show the output.
     #[arg(short, long)]
     metasphere_id: i32,
+    /// Filter output to only show public ip(s) of the metasphere.
     #[arg(long, action=ArgAction::SetTrue)]
     public_ip: Option<bool>,
 }

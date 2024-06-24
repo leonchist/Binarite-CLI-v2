@@ -19,7 +19,7 @@ use self::sphere::{
 };
 
 #[derive(Parser)]
-#[clap(author, version, about = "A MetaGravity command line tool")]
+#[clap(author, version, about = "Metagravity's Platform cli")]
 struct Cli {
     #[clap(subcommand)]
     command: Command,
@@ -27,9 +27,13 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
+    /// Login to Metagravity's platform using Auth0
     Login,
+    /// Remove Metagravity's platform stored credential
     Logout,
+    /// Create, Delete, List Platform Metaspheres
     Sphere(SphereArgs),
+    /// Create, Delete, List Platform Projects (Unimplemented)
     Project,
 }
 
@@ -42,10 +46,15 @@ struct SphereArgs {
 
 #[derive(Debug, Subcommand)]
 enum SphereCommands {
+    /// Create a new Metasphere
     Create(SphereCreateArgs),
+    /// Delete a Metasphere using its id
     Delete(SphereDeleteArgs),
+    /// List all Metaspheres within a project
     List(SphereListArgs),
+    /// Retrieve Metasphere status given its Id
     Status,
+    /// Retrieve Metasphere Output variables
     Output(SphereOutputArgs),
 }
 
