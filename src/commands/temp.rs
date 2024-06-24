@@ -1,26 +1,15 @@
-mod context;
-mod login;
-mod logout;
-mod sphere;
-
 use clap::{Args, Parser, Subcommand};
-pub use context::CommandContext;
-use login::login;
-use logout::logout;
-use openapi::apis::configuration::Configuration;
-
 use cred_store::CredStore;
-use sphere::{get_metasphere_outputs, SphereOutputArgs};
+use openapi::apis::configuration::Configuration;
 
 use crate::auth::get_token::get_token;
 
-use self::sphere::{
-    create_sphere, delete_sphere, list_sphere, SphereCreateArgs, SphereDeleteArgs, SphereListArgs,
-};
+use super::{login::login, logout::logout, sphere::{create_sphere, delete_sphere, get_metasphere_outputs, list_sphere, SphereCreateArgs, SphereDeleteArgs, SphereListArgs, SphereOutputArgs}};
+use super::context::CommandContext;
 
 #[derive(Parser)]
 #[clap(author, version, about = "Metagravity's Platform cli")]
-struct Cli {
+pub struct Cli {
     #[clap(subcommand)]
     command: Command,
 }
@@ -52,9 +41,9 @@ enum SphereCommands {
     Delete(SphereDeleteArgs),
     /// List all Metaspheres within a project
     List(SphereListArgs),
-    /// Retrieve Metasphere status given its Id
+    /// Retrieve Metasphere status given its Id (Unimplemented)
     Status,
-    /// Retrieve Metasphere Output variables
+    /// Retrieve Metasphere Output variables 
     Output(SphereOutputArgs),
 }
 

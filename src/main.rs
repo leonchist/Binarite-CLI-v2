@@ -1,10 +1,5 @@
-use commands::{parse_command, CommandContext};
-use config::Config;
+use binarite_cli::{commands::{context::CommandContext, temp::parse_command}, config::Config};
 use cred_store::{CredStore, Credentials};
-
-mod auth;
-mod commands;
-mod config;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
