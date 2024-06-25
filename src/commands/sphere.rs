@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
-use clap::Args;
+use clap::{Args, ValueEnum};
 use openapi::{
     apis::{
         configuration::Configuration,
         metaspheres_api::{create_metasphere, delete_metasphere, get_metaspheres_from_project},
     },
-    models::CreateMetasphereRequest,
+    models::{self, CreateMetasphereRequest},
 };
 use serde_json::json;
 
@@ -48,9 +48,17 @@ pub struct SphereCreateArgs {
     #[arg(long)]
     instance_count: Option<i32>,
     #[arg(long)]
-    instance_size: Option<String>,
+    instance_size: Option<AltInstanceSize>,
     #[arg(long)]
     custom_args: Option<String>,
+}
+
+#[derive(ValueEnum, Clone, Debug)]
+enum AltInstanceSize {
+    S,
+    M,
+    L,
+    Xl,
 }
 
 pub async fn create_sphere(configuration: &Configuration, args: SphereCreateArgs) {
@@ -69,10 +77,21 @@ pub async fn create_sphere(configuration: &Configuration, args: SphereCreateArgs
         }
         request.terraform_var = Some(Some(json!(custom_arguments)));
     }
-    //request.instance_size = Some(args.instance_size.into());
+    if let Some(instance_size) = args.instance_size {
+        let instance_size = match instance_size {
+            AltInstanceSize::S => models::InstanceSize::S,
+            AltInstanceSize::M => models::InstanceSize::M,
+            AltInstanceSize::L => models::InstanceSize::L,
+            AltInstanceSize::Xl => models::InstanceSize::Xl,
+        };
+        request.instance_size = Some(Some(instance_size));
+    }
     match create_metasphere(configuration, args.project_id, request).await {
         Ok(result) => {
-            println!("Metasphere creation success :\n {}", result.uuid);
+            println!(
+                "Metasphere creation success :\n\tuuid : {}\n\tid : {}",
+                result.uuid, result.id
+            );
         }
         Err(err) => {
             println!("Error creating metasphere : {}", err);
