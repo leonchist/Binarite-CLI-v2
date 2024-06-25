@@ -1,11 +1,9 @@
-use crate::commands::CommandContext;
 use base64::Engine;
 use cred_store::CredStore;
-use oauth2::{
-    basic::BasicClient, reqwest::http_client, AuthUrl, ClientId, DeviceAuthorizationUrl,
-    RefreshToken, TokenResponse, TokenUrl,
-};
+use oauth2::{basic::BasicClient, reqwest::http_client, AuthUrl, ClientId, DeviceAuthorizationUrl, RefreshToken, TokenResponse, TokenUrl};
 use serde::Deserialize;
+
+use crate::commands::context::CommandContext;
 
 #[derive(Debug, Deserialize)]
 struct Claims {

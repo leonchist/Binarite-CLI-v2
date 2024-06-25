@@ -1,5 +1,6 @@
-use crate::config::Config;
 use cred_store::CredStore;
+
+use crate::config::Config;
 
 #[derive(Debug)]
 pub struct CommandContext<'a, T: CredStore> {

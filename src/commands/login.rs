@@ -1,7 +1,8 @@
 use cred_store::CredStore;
 
-use super::CommandContext;
-use crate::auth;
+use crate::auth::login;
+
+use super::context::CommandContext;
 
 fn save_tokens<T: CredStore>(
     access_token: &str,
@@ -17,7 +18,7 @@ fn save_tokens<T: CredStore>(
 }
 
 pub async fn login<'a, T: CredStore>(context: &mut CommandContext<'a, T>) {
-    match auth::login(context.config).await {
+    match login::login(context.config).await {
         Ok(resp) => {
             let access_token = resp.access_token.clone().unwrap();
             let refresh_token = resp.refresh_token.clone().unwrap_or_default();
